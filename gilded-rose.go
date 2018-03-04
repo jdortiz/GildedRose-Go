@@ -30,25 +30,21 @@ func UpdateInventory(items []Item) {
 
 		switch items[i].name {
 		case "Anything":
-			items[i].sellIn -= 1
+			changeSellIn(&items[i].sellIn, -1)
 			if items[i].sellIn < 0 {
-				items[i].quality -= 2
+				changeQuality(&items[i].quality, -2)
 			} else {
-				items[i].quality -= 1
+				changeQuality(&items[i].quality, -1)
 			}
-			if items[i].quality < 0 {
-				items[i].quality = 0
-			}
+			limitToMin(&items[i].quality, 0)
 		case "Aged Brie":
-			items[i].sellIn -= 1
+			changeSellIn(&items[i].sellIn, -1)
 			if items[i].sellIn < 0 {
-				items[i].quality += 2
+				changeQuality(&items[i].quality, +2)
 			} else {
-				items[i].quality += 1
+				changeQuality(&items[i].quality, +1)
 			}
-			if items[i].quality > 50 {
-				items[i].quality = 50
-			}
+			limitToMax(&items[i].quality, 50)
 
 		default:
 		if items[i].name != "Aged Brie" && items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
@@ -98,5 +94,25 @@ func UpdateInventory(items []Item) {
 		}
 
 		}
+	}
+}
+
+func changeSellIn(sellIn *int, increment int) {
+	*sellIn += increment
+}
+
+func changeQuality(quality *int, increment int) {
+	*quality += increment
+}
+
+func limitToMax(value *int, max int) {
+	if *value > max {
+		*value = max
+	}
+}
+
+func limitToMin(value *int, min int) {
+	if *value < min {
+		*value = min
 	}
 }
