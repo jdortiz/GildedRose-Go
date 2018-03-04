@@ -16,6 +16,86 @@ var items = []Item{
 	Item{"Conjured Mana Cake", 3, 6},
 }
 
+type Updatable interface {
+	Update()
+}
+
+type RegularItem struct {
+	*Item
+}
+
+type AgedBrieItem struct {
+	*Item
+}
+
+type SulfurasItem struct {
+	*Item
+}
+
+type BackstagePassesItem struct {
+	*Item
+}
+
+func UpdatableItemFactory(item *Item) Updatable {
+	switch item.name {
+	case "Aged Brie":
+		return &AgedBrieItem{
+			Item: item,
+		}
+	case "Sulfuras, Hand of Ragnaros":
+		return &SulfurasItem{
+			Item: item,
+		}
+	case "Backstage passes to a TAFKAL80ETC concert":
+		return &BackstagePassesItem{
+			Item: item,
+		}
+	default:
+		return &RegularItem{
+			Item: item,
+		}
+	}
+}
+
+func (item *RegularItem) Update() {
+	item.changeSellIn(-1)
+	if item.sellIn < 0 {
+		item.changeQuality(-2)
+	} else {
+		item.changeQuality(-1)
+	}
+	item.limitQualityToMin(0)
+}
+
+func (item *AgedBrieItem) Update() {
+	item.changeSellIn(-1)
+	if item.sellIn < 0 {
+		item.changeQuality(+2)
+	} else {
+		item.changeQuality(+1)
+	}
+	item.limitQualityToMax(50)
+}
+
+func (item *SulfurasItem) Update() {
+}
+
+func (item *BackstagePassesItem) Update() {
+	item.changeSellIn(-1)
+	sellIn := item.sellIn
+	switch {
+	case sellIn >= 10:
+		item.changeQuality(+1)
+	case sellIn < 10 && sellIn >= 5:
+		item.changeQuality(+2)
+	case sellIn < 15 && sellIn >= 0:
+		item.changeQuality(+3)
+	case sellIn < 0:
+		item.limitQualityToMax(0)
+	}
+	item.limitQualityToMax(50)
+}
+
 func main() {
 	fmt.Println("# Before updating")
 	fmt.Println(items)
@@ -28,42 +108,8 @@ func main() {
 func UpdateInventory(items []Item) {
 	for i := 0; i < len(items); i++ {
 
-		switch items[i].name {
-		case "Aged Brie":
-			items[i].changeSellIn(-1)
-			if items[i].sellIn < 0 {
-				items[i].changeQuality(+2)
-			} else {
-				items[i].changeQuality(+1)
-			}
-			items[i].limitQualityToMax(50)
-
-		case "Sulfuras, Hand of Ragnaros":
-
-		case "Backstage passes to a TAFKAL80ETC concert":
-			items[i].changeSellIn(-1)
-			sellIn := items[i].sellIn
-			switch {
-			case sellIn >= 10:
-				items[i].changeQuality(+1)
-			case sellIn < 10 && sellIn >= 5:
-				items[i].changeQuality(+2)
-			case sellIn < 15 && sellIn >= 0:
-				items[i].changeQuality(+3)
-			case sellIn < 0:
-				items[i].limitQualityToMax(0)
-			}
-			items[i].limitQualityToMax(50)
-
-		default:
-			items[i].changeSellIn(-1)
-			if items[i].sellIn < 0 {
-				items[i].changeQuality(-2)
-			} else {
-				items[i].changeQuality(-1)
-			}
-			items[i].limitQualityToMin(0)
-		}
+		updatableItem := UpdatableItemFactory(&items[i])
+		updatableItem.Update()
 	}
 }
 
