@@ -78,6 +78,14 @@ func TestBackstagePassesQualityIsNeverMoreThanFiftyWhenIncreasingThree(t *testin
 	testQuality(t, "Backstage passes to a TAFKAL80ETC concert", 1, 49, 50)
 }
 
+func TestConjuredSellInDecreasesOneUnit(t *testing.T) {
+	testSellIn(t, "Conjured", 8, 12, 7)
+}
+
+func TestConjuredQualityDecreasesTwoUnits(t *testing.T) {
+	testQuality(t, "Conjured", 8, 12, 10)
+}
+
 // Auxiliary functions
 
 func testSellIn(t *testing.T, itemName string, initiallSellIn int, initialQuality int, expectedSellIn int) {
