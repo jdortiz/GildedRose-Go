@@ -47,6 +47,9 @@ func UpdateInventory(items []Item) {
 			}
 			items[i].limitQualityToMax(50)
 
+		case "Sulfuras, Hand of Ragnaros":
+
+
 		default:
 		if items[i].name != "Aged Brie" && items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
 			if items[i].quality > 0 {
