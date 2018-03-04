@@ -60,10 +60,19 @@ func NewBackstagePassesItem(item *Item) *BackstagePassesItem {
 	}
 }
 
+type ConjuredItem struct {
+	*Item
+}
+
+func NewConjuredItem(item *Item) *ConjuredItem {
+	return &ConjuredItem{
+		Item: item,
+	}
+}
+
 type UpdatableItemCreation func(item *Item) Updatable
 
 func UpdatableItemFactory(createClosure map[string]UpdatableItemCreation, item *Item) Updatable {
-
 	create, exists := createClosure[item.name]
 	if exists {
 		return create(item)
@@ -111,6 +120,16 @@ func (item *BackstagePassesItem) Update() {
 	item.limitQualityToMax(50)
 }
 
+func (item *ConjuredItem) Update() {
+	item.changeSellIn(-1)
+	if item.sellIn < 0 {
+		item.changeQuality(-4)
+	} else {
+		item.changeQuality(-2)
+	}
+	item.limitQualityToMin(0)
+}
+
 func main() {
 	fmt.Println("# Before updating")
 	fmt.Println(items)
@@ -131,6 +150,10 @@ func UpdateInventory(items []Item) {
 		"Backstage passes to a TAFKAL80ETC concert": func (item *Item) Updatable {
 			return NewBackstagePassesItem(item)
 		},
+	}
+
+	creationMap["Conjured"] = func (item *Item) Updatable {
+		return NewConjuredItem(item)
 	}
 
 	for i := 0; i < len(items); i++ {

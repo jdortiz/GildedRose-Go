@@ -83,8 +83,15 @@ func TestConjuredSellInDecreasesOneUnit(t *testing.T) {
 }
 
 func TestConjuredQualityDecreasesTwoUnits(t *testing.T) {
-	t.Skip()
 	testQuality(t, "Conjured", 8, 12, 10)
+}
+
+func TestConjuredQualityDecreasesFourUnitsAfterSellDate(t *testing.T) {
+	testQuality(t, "Conjured", 0, 12, 8)
+}
+
+func TestConjuredQualityIsNeverNegative(t *testing.T) {
+	testQuality(t, "Conjured", 8, 0, 0)
 }
 
 // Auxiliary functions
