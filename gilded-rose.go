@@ -24,36 +24,51 @@ type RegularItem struct {
 	*Item
 }
 
+func NewRegularItem(item *Item) *RegularItem {
+	return &RegularItem{
+		Item: item,
+	}
+}
+
 type AgedBrieItem struct {
 	*Item
+}
+
+func NewAgedBrieItem(item *Item) *AgedBrieItem {
+	return &AgedBrieItem{
+		Item: item,
+	}
 }
 
 type SulfurasItem struct {
 	*Item
 }
 
+func NewSulfurasItem(item *Item) *SulfurasItem {
+	return &SulfurasItem{
+		Item: item,
+	}
+}
+
 type BackstagePassesItem struct {
 	*Item
 }
 
-func UpdatableItemFactory(item *Item) Updatable {
-	switch item.name {
-	case "Aged Brie":
-		return &AgedBrieItem{
-			Item: item,
-		}
-	case "Sulfuras, Hand of Ragnaros":
-		return &SulfurasItem{
-			Item: item,
-		}
-	case "Backstage passes to a TAFKAL80ETC concert":
-		return &BackstagePassesItem{
-			Item: item,
-		}
-	default:
-		return &RegularItem{
-			Item: item,
-		}
+func NewBackstagePassesItem(item *Item) *BackstagePassesItem {
+	return &BackstagePassesItem{
+		Item: item,
+	}
+}
+
+type UpdatableItemCreation func(item *Item) Updatable
+
+func UpdatableItemFactory(createClosure map[string]UpdatableItemCreation, item *Item) Updatable {
+
+	create, exists := createClosure[item.name]
+	if exists {
+		return create(item)
+	} else {
+		return NewRegularItem(item)
 	}
 }
 
@@ -106,9 +121,21 @@ func main() {
 }
 
 func UpdateInventory(items []Item) {
+	creationMap := map[string]UpdatableItemCreation {
+		"Aged Brie": func (item *Item) Updatable {
+			return NewAgedBrieItem(item)
+		},
+		"Sulfuras, Hand of Ragnaros": func (item *Item) Updatable {
+			return NewSulfurasItem(item)
+		},
+		"Backstage passes to a TAFKAL80ETC concert": func (item *Item) Updatable {
+			return NewBackstagePassesItem(item)
+		},
+	}
+
 	for i := 0; i < len(items); i++ {
 
-		updatableItem := UpdatableItemFactory(&items[i])
+		updatableItem := UpdatableItemFactory(creationMap, &items[i])
 		updatableItem.Update()
 	}
 }
