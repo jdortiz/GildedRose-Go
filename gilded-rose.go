@@ -49,6 +49,20 @@ func UpdateInventory(items []Item) {
 
 		case "Sulfuras, Hand of Ragnaros":
 
+		case "Backstage passes to a TAFKAL80ETC concert":
+			items[i].changeSellIn(-1)
+			sellIn := items[i].sellIn
+			switch {
+			case sellIn >= 10:
+				items[i].changeQuality(+1)
+			case sellIn < 10 && sellIn >= 5:
+				items[i].changeQuality(+2)
+			case sellIn < 15 && sellIn >= 0:
+				items[i].changeQuality(+3)
+			case sellIn < 0:
+				items[i].limitQualityToMax(0)
+			}
+			items[i].limitQualityToMax(50)
 
 		default:
 		if items[i].name != "Aged Brie" && items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
