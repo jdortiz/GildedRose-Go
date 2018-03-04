@@ -17,12 +17,15 @@ var items = []Item{
 }
 
 func main() {
+	fmt.Println("# Before updating")
+	fmt.Println(items)
+	UpdateInventory(items)
 	fmt.Println("OMGHAI!")
-	// fmt.Print(items)
-	GildedRose()
+	fmt.Println("# After updating")
+	fmt.Println(items)
 }
 
-func GildedRose() {
+func UpdateInventory(items []Item) {
 	for i := 0; i < len(items); i++ {
 
 		if items[i].name != "Aged Brie" && items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
