@@ -83,6 +83,7 @@ func TestConjuredSellInDecreasesOneUnit(t *testing.T) {
 }
 
 func TestConjuredQualityDecreasesTwoUnits(t *testing.T) {
+	t.Skip()
 	testQuality(t, "Conjured", 8, 12, 10)
 }
 
