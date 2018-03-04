@@ -39,6 +39,16 @@ func UpdateInventory(items []Item) {
 			if items[i].quality < 0 {
 				items[i].quality = 0
 			}
+		case "Aged Brie":
+			items[i].sellIn -= 1
+			if items[i].sellIn < 0 {
+				items[i].quality += 2
+			} else {
+				items[i].quality += 1
+			}
+			if items[i].quality > 50 {
+				items[i].quality = 50
+			}
 
 		default:
 		if items[i].name != "Aged Brie" && items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
