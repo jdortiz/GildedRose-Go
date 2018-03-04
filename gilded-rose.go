@@ -28,6 +28,19 @@ func main() {
 func UpdateInventory(items []Item) {
 	for i := 0; i < len(items); i++ {
 
+		switch items[i].name {
+		case "Anything":
+			items[i].sellIn -= 1
+			if items[i].sellIn < 0 {
+				items[i].quality -= 2
+			} else {
+				items[i].quality -= 1
+			}
+			if items[i].quality < 0 {
+				items[i].quality = 0
+			}
+
+		default:
 		if items[i].name != "Aged Brie" && items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
 			if items[i].quality > 0 {
 				if items[i].name != "Sulfuras, Hand of Ragnaros" {
@@ -73,6 +86,7 @@ func UpdateInventory(items []Item) {
 				}
 			}
 		}
-	}
 
+		}
+	}
 }
